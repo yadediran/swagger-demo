@@ -14,14 +14,15 @@ import java.util.concurrent.ConcurrentMap;
 @RequestMapping("/users")
 @Api(value = "User REST Endpoint" )
 public class UserRestServiceController implements UserRestAPI {
+
     ConcurrentMap<String , UserSet> userSets = new ConcurrentHashMap<>();
     @Override
     @GetMapping("/{userId}")
     @ApiOperation(value = " returns the JSON representation and Finds users by Id")
     @ApiResponses(
             value = {
-                    @ApiResponse(code = 100, message = "100 is the message"),
-                    @ApiResponse(code =200, message = "Successful")
+                    @ApiResponse(code = 200, message = "Suceess|OK"),
+                    @ApiResponse(code = 404, message = "not found!!!")
             }
     )
     public UserSet getUserSet(@ApiParam(value = "ID value for the user to be retrieve" , required =true)
