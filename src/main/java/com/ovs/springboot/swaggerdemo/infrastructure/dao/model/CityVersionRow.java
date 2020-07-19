@@ -9,7 +9,7 @@ public class CityVersionRow extends Data {
     private final long cityVersionId;
     private final long cityId;
     private final long userId;
-    private final int versionseq;
+    private final int identifierseq;
     private final double longitude;
     private final double latitude;
     //private final String ipAddress;
@@ -18,7 +18,7 @@ public class CityVersionRow extends Data {
         this.cityVersionId = builder.cityVersionId;
         this.cityId = builder.cityId;
         this.userId = builder.userId;
-        this.versionseq = builder.versionseq;
+        this.identifierseq = builder.identifierseq;
         this.longitude = builder.longitude;
         this.latitude = builder.latitude;
         //this.ipAddress = builder.ipAddress;
@@ -31,7 +31,7 @@ public class CityVersionRow extends Data {
 
     public long userId() {return userId;}
 
-    public int versionseq() {return versionseq;}
+    public int identifierseq() {return identifierseq;}
 
     public double longitude () {return longitude;}
 
@@ -44,7 +44,7 @@ public class CityVersionRow extends Data {
     public CityVersionRowBuilder copy(){
         return new CityVersionRowBuilder()
                 .cityId(cityId)
-                .versionseq(versionseq)
+                .identifierseq(identifierseq)
                 .userId(userId)
                 .longitude(longitude)
                 .latitude(latitude)
@@ -57,7 +57,7 @@ public class CityVersionRow extends Data {
         private long cityId;
         private long cityVersionId;
         private long userId;
-        private int versionseq;
+        private int identifierseq;
         private double longitude;
         private double latitude;
         // private String ipAddress;
@@ -81,8 +81,8 @@ public class CityVersionRow extends Data {
             return this;
         }
 
-        public CityVersionRowBuilder versionseq(int versionseq){
-            this.versionseq = versionseq;
+        public CityVersionRowBuilder identifierseq(int identifierseq){
+            this.identifierseq = identifierseq;
             return this;
         }
 

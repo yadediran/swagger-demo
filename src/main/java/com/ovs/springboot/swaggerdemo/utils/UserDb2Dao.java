@@ -4,6 +4,7 @@ import com.cadenzauk.core.lang.CompositeAutoCloseable;
 import com.cadenzauk.core.tuple.Tuple4;
 import com.cadenzauk.siesta.Database;
 import com.ovs.springboot.swaggerdemo.dao.UserDao;
+
 import com.ovs.springboot.swaggerdemo.infrastructure.dao.model.*;
 import com.ovs.springboot.swaggerdemo.model.Location;
 import com.ovs.springboot.swaggerdemo.model.LocationType;
@@ -29,14 +30,7 @@ import static java.util.stream.Collectors.groupingBy;
 
 public class UserDb2Dao implements UserDao {
     private final static Logger LOGGER = LoggerFactory.getLogger(UserDb2Dao.class);
-    private static final long IP_ADDRESS = 0;
     private static final int LOCATION_THRESHOLD = 50;
-    private static final double LOCATION = 0;
-    private static final String LAST_NAME = "";
-    private static final String First_NAME = "";
-    private static final double LONGITUDE = 0;
-    private static final double LATITUDE = 0;
-
     //a regex for a digit zero to 255 and followed by a dot, repeat 4 times - this is the regex to validate an IP Address
     private static final String ipAddress = "(\\d{1,2}|(0|1)\\" + "d{2} | 2[0-4]\\d|25[0-5])";
     private static String regex = ipAddress + "\\." + ipAddress + "\\." + ipAddress + "\\." + ipAddress;
@@ -60,7 +54,7 @@ public class UserDb2Dao implements UserDao {
 
     @Override
     //city version query
-    public List<Location> getLocationDetail(long userId) {
+    public List<Location> getUserSetLocationDetail(long userId) {
         List<CityVersionRow> latestVersionCityVersionRows = new ArrayList<>();
         try (CompositeAutoCloseable closer = new CompositeAutoCloseable()) {
             database.from(CityRow.class, "c")
@@ -70,11 +64,11 @@ public class UserDb2Dao implements UserDao {
                     .on(CitySetRow::citysetId).isEqualTo(CityRow::citysetId)
                     .join(CityVersionRow.class, "cv")
                     .on(CityVersionRow::cityId).isEqualTo(CityRow::cityId)
-                    .where("cv", CityVersionRow::versionseq).isEqualTo(
+                    .where("cv", CityVersionRow::identifierseq).isEqualTo(
                     database.from(CityVersionRow.class, "cv")
-                            .select("cv", CityVersionRow::versionseq)
+                            .select("cv", CityVersionRow::identifierseq)
                             .where("cv", CityVersionRow::cityId).isEqualTo("cv", CityVersionRow::cityId)
-                            .orderBy("cv", CityVersionRow::versionseq, DESC)
+                            .orderBy("cv", CityVersionRow::identifierseq, DESC)
                             .fetchFirst(1))
                     .and("cv", CityVersionRow::userId).isEqualTo(userId)
                     .stream(closer)
@@ -89,7 +83,7 @@ public class UserDb2Dao implements UserDao {
             try (CompositeAutoCloseable closer = new CompositeAutoCloseable()) {
                 database.from(CityVersionRow.class)
                         .where(CityVersionRow::cityId).isEqualTo(cv.cityId())
-                        .and(CityVersionRow::versionseq).isEqualTo(cv.versionseq() - 1)
+                        .and(CityVersionRow::identifierseq).isEqualTo(cv.identifierseq() - 1)
                         .stream(closer)
                         .forEach(last2CityVersionRows::add);
             }
@@ -101,28 +95,28 @@ public class UserDb2Dao implements UserDao {
     @Override
     //userset query
     public Optional<UserSet> getUserSet(long userId) {
-        //return a list of location and call getLocationDetail
-        List<Location> locations = getLocationDetail(userId);
+        //return a list of location and call getUserSetLocationDetail
+        List<Location> locations = getUserSetLocationDetail(userId);
         return database.from(UserSetRow.class, "us")
                 .join(UserSetStatusRow.class, "uss")
                 .on(UserSetRow::userId).isEqualTo(UserSetRow::userId)
-                .where("uss", UserSetStatusRow::versionseq).isEqualTo(
+                .where("uss", UserSetStatusRow::identifierseq).isEqualTo(
                         database.from(UserSetStatusRow.class, "uss")
-                                .select("uss", UserSetStatusRow::versionseq)
+                                .select("uss", UserSetStatusRow::identifierseq)
                                 .where("uss", UserSetStatusRow::userId).isEqualTo(userId)
-                                .orderBy("uss", UserSetStatusRow::versionseq, DESC)
+                                .orderBy("uss", UserSetStatusRow::identifierseq, DESC)
                                 .fetchFirst(1))
                 .and(UserSetRow::userId).isEqualTo(userId)
                 .optional()
-                .map(t -> UserSet.getBuilder()
+                .map(name -> UserSet.getBuilder()
                         .locationDetails(locations)
-                        .userId(t.item1().userId())
-                        .first_name(t.item1().first_name())
-                        .last_name(t.item1().last_name())
-                        .postcode(t.item1().postcode())
-                        .email(t.item1().email())
-                        .updatedBy(t.item2().updatedBy())
-                        .creationTs(t.item2().creationTs())
+                        .userId(name.item1().userId())
+                        .first_name(name.item1().first_name())
+                        .last_name(name.item1().last_name())
+                        .postcode(name.item1().postcode())
+                        .email(name.item1().email())
+                        .updatedBy(name.item2().updatedBy())
+                        .creationTs(name.item2().creationTs())
                         .build());
     }
 
@@ -149,7 +143,7 @@ public class UserDb2Dao implements UserDao {
             List<CityVersionRow> cityVersions = groupData.get(cityId);
 
             if (cityVersions.size() > 1) {
-                cityVersions.sort(Comparator.comparing(CityVersionRow::versionseq).reversed());
+                cityVersions.sort(Comparator.comparing(CityVersionRow::identifierseq).reversed());
                 users.add(Location.newBuilder()
                         .cityId(cityId)
                         .longitude(cityVersions.get(0).longitude())
@@ -210,20 +204,20 @@ public class UserDb2Dao implements UserDao {
     private UserSetStatusRow userSetStatusRow(long userId, Optional<String> city, String postcode) {
         Optional<UserSetStatusRow> latestUserSetStatusRow = getLastestUserSetStatusRow(userId);
 
-        int versionseq = latestUserSetStatusRow.map(UserSetStatusRow::versionseq).map(v -> v + 1).orElse(1);
+        int identiferseq = latestUserSetStatusRow.map(UserSetStatusRow::identifierseq).map(v -> v + 1).orElse(1);
 
         return UserSetStatusRow.getBuilder()
                 .userId(userId)
                 .city(city)
                 .postcode(postcode)
-                .versionseq(versionseq)
+                .identifierseq(identiferseq)
                 .build();
     }
 
     private Optional<UserSetStatusRow> getLastestUserSetStatusRow(long userId) {
         return database.from(UserSetStatusRow.class, "uss")
                 .where(UserSetStatusRow::userId).isEqualTo(userId)
-                .orderBy(UserSetStatusRow::versionseq, DESC)
+                .orderBy(UserSetStatusRow::identifierseq, DESC)
                 //.fetchFirst(1)
                 .optional();
 

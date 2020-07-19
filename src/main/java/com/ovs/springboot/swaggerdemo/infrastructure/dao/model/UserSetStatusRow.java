@@ -11,7 +11,7 @@ public class UserSetStatusRow extends Data {
     private final long userId;
     private final ZonedDateTime updatedBy;
     private final ZonedDateTime creationTs;
-    private final int versionseq;
+    private final int identifierseq;
     private final Optional<String> city;
     private final String postcode;
 
@@ -19,7 +19,7 @@ public class UserSetStatusRow extends Data {
         this.userId = builder.userId;
         this.updatedBy = builder.updatedBy;
         this.creationTs = builder.creationTs;
-        this.versionseq = builder.versionseq;
+        this.identifierseq = builder.identifierseq;
         this.city = builder.city;
         this.postcode = builder.postcode;
 
@@ -38,9 +38,7 @@ public class UserSetStatusRow extends Data {
         return creationTs;
     }
 
-    public int versionseq() {
-        return versionseq;
-    }
+    public int identifierseq() { return identifierseq; }
 
     public Optional<String> city() {
         return city;
@@ -59,7 +57,7 @@ public class UserSetStatusRow extends Data {
         private long userId;
         private ZonedDateTime updatedBy;
         private ZonedDateTime creationTs;
-        private int versionseq;
+        private int identifierseq;
         private Optional<String> city;
         private String postcode;
 
@@ -79,8 +77,8 @@ public class UserSetStatusRow extends Data {
             return this;
         }
 
-        public Builder versionseq(int versionseq) {
-            this.versionseq = versionseq;
+        public Builder identifierseq(int identifierseq) {
+            this.identifierseq = identifierseq;
             return this;
         }
 

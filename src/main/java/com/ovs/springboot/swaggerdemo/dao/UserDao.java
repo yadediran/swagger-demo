@@ -20,8 +20,10 @@ public interface UserDao {
     Optional<Location> getLocation(long userId);
 
 
+
+
     //city version query
-    List<Location> getLocationDetail(long userId);
+    List<Location> getUserSetLocationDetail(long userId);
 
     Optional<UserSet> getUserSet(long userId);
 
