@@ -25,13 +25,13 @@ public class Location extends Data {
     // (latitude, longitude) specified in degrees
     //add parameter constructor
     private Location(LocationBuilder builder) {
-        this.cityId = builder.cityId;
-        this.userId = builder.userId;
-        this.locationType = builder.locationType;
-        this.longitude = builder.longitude;
-        this.latitude = builder.latitude;
-        this.ipAddress = builder.ipAddress;
-        this.users = builder.users;
+        this.cityId = LocationBuilder.cityId;
+        this.userId = LocationBuilder.userId;
+        this.locationType = LocationBuilder.locationType;
+        this.longitude = LocationBuilder.longitude;
+        this.latitude = LocationBuilder.latitude;
+        this.ipAddress = LocationBuilder.ipAddress;
+        this.users = LocationBuilder.users;
 
 
     }
@@ -99,19 +99,19 @@ public class Location extends Data {
         }
         @JsonSetter
         public LocationBuilder cityId(long cityId){
-            this.cityId = cityId;
+            LocationBuilder.cityId = cityId;
             return this;
         }
 
         @JsonSetter
         public LocationBuilder userId(long userId){
-            this.userId = userId;
+            LocationBuilder.userId = userId;
             return this;
         }
 
         @JsonSetter
         public LocationBuilder locationType(LocationType locationType){
-            this.locationType = locationType;
+            LocationBuilder.locationType = locationType;
             return this;
         }
 
@@ -119,30 +119,30 @@ public class Location extends Data {
 
         @JsonSetter
         public LocationBuilder longitude(double longitude) {
-            this.longitude = longitude;
+            LocationBuilder.longitude = longitude;
             return this;
         }
 
         @JsonSetter
         public LocationBuilder latitude(double latitude) {
-            this.latitude = latitude;
+            LocationBuilder.latitude = latitude;
             return this;
         }
 
         @JsonSetter
         public LocationBuilder users (String users){
-            this.users = users;
+            LocationBuilder.users = users;
             return this;
         }
         @JsonSetter
         public LocationBuilder name (double name){
-            this.name = name;
+            LocationBuilder.name = name;
             return this;
         }
 
         @JsonSetter
         public LocationBuilder ipAddress(boolean ipAddress){
-            this.ipAddress = ipAddress;
+            LocationBuilder.ipAddress = ipAddress;
             return this;
         }
 

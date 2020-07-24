@@ -9,25 +9,15 @@ import java.util.Optional;
 public interface UserDao {
 
 
-    static UserSet getLocation() {
-        return getLocation();
-    }
-
-    static UserSet getUserSet() {
-        return getUserSet();
-    }
-
-    Optional<Location> getLocation(long userId);
-
-
-
-
     //city version query
     List<Location> getUserSetLocationDetail(long userId);
 
     Optional<UserSet> getUserSet(long userId);
 
-    Optional<UserSet> findUserSetById(long userId);
+    default Optional<UserSet> findUserSetById(long userId) {
+        Optional<UserSet> userSet = findUserSetById(userId);
+        return userSet;
+    }
 
     long addUserSet(UserSet userSet);
 }

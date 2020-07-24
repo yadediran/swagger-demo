@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @JsonDeserialize(builder = UserSet.Builder.class)
 public class UserSet extends Data {
-    private List<Location> locationDetails;
+    private final List<Location> locationDetails;
     private final long userId;
     private final Optional<String> city;
     private final String first_name;

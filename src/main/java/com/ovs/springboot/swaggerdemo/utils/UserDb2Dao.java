@@ -33,9 +33,9 @@ public class UserDb2Dao implements UserDao {
     private static final int LOCATION_THRESHOLD = 50;
     //a regex for a digit zero to 255 and followed by a dot, repeat 4 times - this is the regex to validate an IP Address
     private static final String ipAddress = "(\\d{1,2}|(0|1)\\" + "d{2} | 2[0-4]\\d|25[0-5])";
-    private static String regex = ipAddress + "\\." + ipAddress + "\\." + ipAddress + "\\." + ipAddress;
-    private static Pattern pattern = Pattern.compile(regex);
-    private static Matcher matcher = pattern.matcher(ipAddress);
+    private static final String regex = ipAddress + "\\." + ipAddress + "\\." + ipAddress + "\\." + ipAddress;
+    private static final Pattern pattern = Pattern.compile(regex);
+    private static final Matcher matcher = pattern.matcher(ipAddress);
     private final Database database;
     //private final UserRepository userRepository;
 
@@ -47,10 +47,6 @@ public class UserDb2Dao implements UserDao {
 
     }
 
-    @Override
-    public Optional<Location> getLocation(long userId) {
-        return Optional.empty();
-    }
 
     @Override
     //city version query
@@ -149,7 +145,7 @@ public class UserDb2Dao implements UserDao {
                         .longitude(cityVersions.get(0).longitude())
                         .latitude(cityVersions.get(0).latitude())
                         .ipAddress(UserDb2Dao.ipAddress())
-                        .locationType(LocationType.URBAN)
+                        .locationType(LocationType.TOWN)
                         .build());
             } else {
                 users.add(Location.newBuilder()
@@ -157,7 +153,7 @@ public class UserDb2Dao implements UserDao {
                         .longitude(cityVersions.get(0).longitude())
                         .latitude(cityVersions.get(0).latitude())
                         .ipAddress(UserDb2Dao.ipAddress())
-                        .locationType(LocationType.RURAL)
+                        .locationType(LocationType.REGION)
                         .build());
 
             }
